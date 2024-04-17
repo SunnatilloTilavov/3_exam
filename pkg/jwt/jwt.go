@@ -1,7 +1,7 @@
 package jwt
 
 import (
-	"clone/rent_car_us/config"
+	"clone/3_exam/config"
 	"fmt"
 	"time"
 

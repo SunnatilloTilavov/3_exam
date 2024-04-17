@@ -1,11 +1,25 @@
 package models
 
-type CustomerLoginRequest struct {
-	Login    string `json:"login"`
+type UserLoginRequest struct {
+	Mail    string `json:"mail"`
 	Password string `json:"password"`
 }
 
-type CustomerLoginResponse struct {
+type UserLoginOTP struct {
+	Mail    string `json:"mail"`
+	Optcode string `json:"otp_code"`
+}
+
+
+type Forgetpassword2 struct {
+	Mail    string `json:"mail"`
+	Optcode string `json:"otp_code"`
+	Password string `json:"password"`
+
+}
+
+
+type UserLoginResponse struct {
 	AccessToken  string `json:"access_token"`
 	RefreshToken string `json:"refresh_token"`
 }
@@ -15,18 +29,19 @@ type AuthInfo struct {
 	UserRole string `json:"user_role"`
 }
 
-type CustomerRegisterRequest struct {
+type UserRegisterRequest struct {
 	Mail string `json:"mail"`
 }
 
 
 
-type LoginCustomer struct {
-	Login     string  `json:"login"`
+type LoginUser struct {
+	Mail       string  `json:"Mail"`
 	First_name        string  `json:"first_name"`
 	Last_name       string  `json:"last_name"`
-	Gmail       string  `json:"gmail"`
 	Phone     string  `json:"phone"`
 	Password string `json:"password"`
-	GmailCode string `json:"gmailcode"`
+	Sex string `json:"sex"`
+	Active bool `json:"active"`
+	MailCode string `json:"mailcode"`
 }

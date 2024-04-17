@@ -1,11 +1,11 @@
 package handler
 
 import (
-	"clone/rent_car_us/api/models"
-	"clone/rent_car_us/config"
-	"clone/rent_car_us/service"
-	"clone/rent_car_us/pkg/jwt"
-	"clone/rent_car_us/pkg/logger"
+	"clone/3_exam/api/models"
+	"clone/3_exam/config"
+	"clone/3_exam/service"
+	"clone/3_exam/pkg/jwt"
+	"clone/3_exam/pkg/logger"
 	"fmt"
 	"strconv"
 	"errors"
@@ -95,7 +95,7 @@ func getAuthInfo(c *gin.Context) (models.AuthInfo, error) {
 	}
 
 	role := m["user_role"].(string)
-	if !(role == config.ADMIN_ROLE || role == config.CUSTOMER_ROLE) {
+	if !(role == config.ADMIN_ROLE || role == config.User_ROLE) {
 		return models.AuthInfo{}, errors.New("unauthorized")
 	}
 

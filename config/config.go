@@ -35,7 +35,7 @@ func Load() Config {
 	cfg.PostgresDatabase = cast.ToString(getOrReturnDefault("POSTGRES_DATABASE", "sqldatabase"))
 	cfg.PostgresUser = cast.ToString(getOrReturnDefault("POSTGRES_USER", "sunnatillo"))
 	cfg.PostgresPassword = cast.ToString(getOrReturnDefault("POSTGRES_PASSWORD", "1111"))
-	cfg.ServiceName = cast.ToString(getOrReturnDefault("SERVICE_NAME", "rent_car_api_gateway"))
+	cfg.ServiceName = cast.ToString(getOrReturnDefault("SERVICE_NAME", "user_gateway"))
 	
 	cfg.RedisHost = cast.ToString(getOrReturnDefault("REDIS_HOST", "localhost"))
 	cfg.RedisPort = cast.ToString(getOrReturnDefault("REDIS_PORT", "6379"))

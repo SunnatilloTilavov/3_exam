@@ -3,12 +3,12 @@ package main
 import (
 	"context"
 	"fmt"
-	"clone/rent_car_us/api"
-	"clone/rent_car_us/config"
-	"clone/rent_car_us/pkg/logger"
-	"clone/rent_car_us/service"
-	"clone/rent_car_us/storage/postgres"
-	"clone/rent_car_us/storage/redis"
+	"clone/3_exam/api"
+	"clone/3_exam/config"
+	"clone/3_exam/pkg/logger"
+	"clone/3_exam/service"
+	"clone/3_exam/storage/postgres"
+	"clone/3_exam/storage/redis"
 
 )
 

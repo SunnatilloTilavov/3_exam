@@ -1,11 +1,11 @@
 package api
 
 import (
-	"clone/rent_car_us/api/handler"
-	"clone/rent_car_us/service"
+	"clone/3_exam/api/handler"
+	"clone/3_exam/service"
 	// "errors"
 	// "net/http"
-	"clone/rent_car_us/pkg/logger"
+	"clone/3_exam/pkg/logger"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -24,49 +24,30 @@ func New(services service.IServiceManager, log logger.ILogger) *gin.Engine {
 	r := gin.Default()
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
-	// r.Use(authMiddleware)
-	r.POST("/customer/login", h.CustomerLogin)
-	r.POST("/customer/register", h.CustomerRegister)
-	r.POST("/customer/auth/create", h.CustomerRegisterCreate)
 
+	r.POST("/User/login", h.UserLogin)
+	r.POST("/User/register", h.UserRegister)
+	r.POST("/User/auth/create", h.UserRegisterCreateConfirm)
+	r.POST("/User/auth/loginotp", h.UserLoginOtp2)
+	r.POST("/User/loginotp", h.UserLoginOtp)
+	r.POST("/User/Forgetpassword", h.Forgetpassword)
+	r.POST("/User/Forgetpassword2", h.Forgetpassword2)
+	
+	r.PATCH("/User/status/update/:id", h.UpdateStatus)
 
-	r.POST("/car", h.CreateCar)
-	r.GET("/car/:id", h.GetByIDCar)
-	r.GET("/car", h.GetAllCars)
-	r.GET("/car/free", h.GetAllCarsFree)
+	r.PATCH("/User/password", h.UpdatePassword)
 
-
-	r.PUT("/car/:id", h.UpdateCar)
-	r.DELETE("/car/:id", h.DeleteCar)
-
-	r.PATCH("/customer/password", h.UpdatePassword)
-
-	r.POST("/customer", h.CreateCustomer)
-	r.GET("/customer/:id", h.GetByIDCustomer)
-	r.GET("/customer", h.GetAllCustomers)
-	r.PUT("/customer/:id", h.UpdateCustomer)
-	r.DELETE("/customer/:id", h.DeleteCustomer)
-	r.GET("/customercars",h.GetAllCustomerCars)
-
-	r.POST("/order", h.CreateOrder)
-	r.GET("/order/:id", h.GetOne)
-	r.GET("/order", h.GetAllOrders)
-	r.PUT("/order/:id", h.UpdateOrder)
-	r.DELETE("/order/:id", h.DeleteOrder)
-	r.PATCH("/order/status/:id", h.UpdateOrderStatus)
+	r.POST("/User", h.CreateUser)
+	r.GET("/User/:id", h.GetByIDUser)
+	r.GET("/User", h.GetAllUsers)
+	r.PUT("/User/:id", h.UpdateUser)
+	r.DELETE("/User/:id", h.DeleteUser)
 
 
 
 	return r
 }
 
-// func authMiddleware(c *gin.Context) {
-// 	auth := c.GetHeader("Authorization")
-// 	if auth == "" {
-// 		c.AbortWithError(http.StatusUnauthorized, errors.New("unauthorized"))
-// 	}
-// 	c.Next()
-// }
 
 
 

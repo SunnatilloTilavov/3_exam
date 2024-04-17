@@ -1,54 +1,35 @@
 package storage
 
 import (
-	"clone/rent_car_us/api/models"
+	"clone/3_exam/api/models"
 	"context"
 	"time"
 )
 type IStorage interface {
 	CloseDB()
-	Car() ICarStorage
-	Customer() ICustomerStorage
-	Order() IOrderStorage
+	User() IUserStorage
 	Redis() IRedisStorage
 }
 
-type ICarStorage interface {
-	Create(context.Context,models.Car) (string, error)
-	Update(context.Context,models.Car) (string, error)
-	Delete(context.Context,string) error
-	GetByID(context.Context,string) (models.Car, error)
-	GetAllCars(context.Context, models.GetAllCarsRequest) (models.GetAllCarsResponse, error)
-	GetAllCarsFree(context.Context, models.GetAllCarsRequest) (models.GetAllCarsResponse, error)
-}
 
-type ICustomerStorage interface {
+type IUserStorage interface {
 
-	CustomerRegisterCreate(ctx context.Context, customer models.LoginCustomer) (string, error)
+	UserRegisterCreateConfirm(ctx context.Context, User models.LoginUser) (string, error)
 
-	Create(context.Context,models.CreateCustomer) (string, error)
-	GetByID(context.Context,string) (models.GetCustomer, error)
-	GetAllCustomers(context.Context,models.GetAllCustomersRequest) (models.GetAllCustomersResponse, error)
-	GetAllCustomerCars(context.Context,models.GetAllCustomerCarsRequest) (models.GetAllCustomerCarsResponse, error)
-	Update(context.Context,models.GetCustomer) (string, error)
+	Create(context.Context,models.CreateUser) (string, error)
+	GetByIDUser(context.Context,string) (models.GetAllUser, error)
+	GetAllUsers(context.Context,models.GetAllUsersRequest) (models.GetAllUsersResponse, error)
+	Update(context.Context,models.UpdateUser) (string, error)
 	Delete(context.Context,string) error
 	GetPassword(ctx context.Context, phone string) (string, error)
-	UpdatePassword(context.Context,models.PasswordCustomer) (string, error)
-	GetByLogin(context.Context, string) (models.GetAllCustomer, error)
+	UpdatePassword(context.Context,models.PasswordUser) (string, error)
+	GetByLogin(context.Context, string) (models.GetIdPassword, error)
 	GetGmail (ctx context.Context, gmail string) (string, error)
-	///GetCustomer(request models.GetAllCustomersRequest) (models.GetAllCustomersResponse, error)
 
+	UpdatePasswordForget(ctx context.Context, User models.Forgetpassword2) (string, error)
+	UpdateStatus(ctx context.Context, User models.UpdateStatus) (string, error)
 }
 
-type IOrderStorage interface {
-	CreateOrder(context.Context,models.CreateOrder) (string, error)
-	UpdateOrder(context.Context,models.GetOrder) (string, error)
-	GetOne(context.Context,string) (models.GetOrder, error)
-	GetAll(context.Context,models.GetAllOrdersRequest) (models.GetAllOrdersResponse, error)
-	DeleteOrder(context.Context,string) error
-
-	UpdateOrderStatus(context.Context,models.GetOrder) (string, error)
-}
 
 type IRedisStorage interface {
 	SetX(ctx context.Context, key string, value interface{}, duration time.Duration) error

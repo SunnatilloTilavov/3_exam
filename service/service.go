@@ -1,47 +1,32 @@
 package service
 
 import (
-	"clone/rent_car_us/storage"
-	"clone/rent_car_us/pkg/logger"
+	"clone/3_exam/storage"
+	"clone/3_exam/pkg/logger"
 )
 
 type IServiceManager interface {
-	Car() carService
-	Customer() CustomerService
-	Order() OrderService
+	User() UserService
 	Auth() authService
 }
 
 type Service struct {
-	carService carService
-	CustomerService CustomerService
-	OrderService OrderService
+	UserService UserService
 	logger logger.ILogger
 	auth            authService
 }
 
 func New(storage storage.IStorage,log logger.ILogger, redis storage.IRedisStorage) Service {
 	services := Service{}
-	services.carService = NewCarService(storage,log)
-	services.CustomerService = NewCustomerService(storage,log,redis)
-	services.OrderService = NewOrderService(storage,log)
+	services.UserService = NewUserService(storage,log,redis)
 	services.logger=log
 	services.auth=NewAuthService(storage, log, redis)
 
 	return services
 }
 
-func (s Service) Car() carService {
-	return s.carService
-}
-
-func (s Service) Customer() CustomerService {
-	return s.CustomerService
-}
-
-
-func (s Service) Order() OrderService {
-	return s.OrderService
+func (s Service) User() UserService {
+	return s.UserService
 }
 
 func (s Service) Auth() authService {

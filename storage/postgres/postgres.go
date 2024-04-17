@@ -3,9 +3,9 @@ package postgres
 import (
  "context"
  "fmt"
- "clone/rent_car_us/config"
- "clone/rent_car_us/storage"
- "clone/rent_car_us/storage/redis"
+ "clone/3_exam/config"
+ "clone/3_exam/storage"
+ "clone/3_exam/storage/redis"
  "time"
 
  _ "github.com/lib/pq"
@@ -14,8 +14,8 @@ import (
 )
 
 type Store struct {
- Pool *pgxpool.Pool
- cfg    config.Config
+Pool *pgxpool.Pool
+cfg    config.Config
 redis  storage.IRedisStorage
 }
 
@@ -48,23 +48,12 @@ func (s Store) CloseDB() {
  s.Pool.Close()
 }
 
-func (s Store) Car() storage.ICarStorage {
- newCar := NewCar(s.Pool)
+func (s Store) User() storage.IUserStorage {
+ newUser := NewUser(s.Pool)
 
- return &newCar
+ return &newUser
 }
 
-func (s Store) Customer() storage.ICustomerStorage {
- newCustomer := NewCustomer(s.Pool)
-
- return &newCustomer
-}
-
-func (s Store) Order() storage.IOrderStorage {
- NewOrder := NewOrder(s.Pool)
-
- return &NewOrder
-}
 
 func (s Store) Redis() storage.IRedisStorage {
 	return redis.New(s.cfg)

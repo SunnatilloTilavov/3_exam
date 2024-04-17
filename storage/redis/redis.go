@@ -1,8 +1,8 @@
 package redis
 
 import (
-	"clone/rent_car_us/config"
-	"clone/rent_car_us/storage"
+	"clone/3_exam/config"
+	"clone/3_exam/storage"
 	"context"
 	"time"
 

@@ -1,11 +1,13 @@
 package handler
 
 import (
-	_ "clone/rent_car_us/api/docs"
-	"clone/rent_car_us/api/models"
-	"clone/rent_car_us/pkg/check"
-	"clone/rent_car_us/pkg/password"
-	// "clone/rent_car_us/storage/postgres"
+	_ "clone/3_exam/api/docs"
+	"clone/3_exam/api/models"
+	"clone/3_exam/pkg/check"
+	"clone/3_exam/pkg/password"
+	"strings"
+
+	// "clone/3_exam/storage/postgres"
 
 	"fmt"
 	"net/http"
@@ -13,20 +15,20 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// CustomerLogin godoc
-// @Router       /customer/login [POST]
-// @Summary      Customer login
-// @Description  Customer login
+// UserLogin godoc
+// @Router       /User/login [POST]
+// @Summary      User login
+// @Description  User login
 // @Tags         auth
 // @Accept       json
 // @Produce      json
-// @Param        login body models.CustomerLoginRequest true "login"
-// @Success      201  {object}  models.CustomerLoginResponse
+// @Param        login body models.UserLoginRequest true "login"
+// @Success      201  {object}  models.UserLoginResponse
 // @Failure      400  {object}  models.Response
 // @Failure      404  {object}  models.Response
 // @Failure      500  {object}  models.Response
-func (h *Handler) CustomerLogin(c *gin.Context) {
-	loginReq := models.CustomerLoginRequest{}
+func (h *Handler) UserLogin(c *gin.Context) {
+	loginReq := models.UserLoginRequest{}
 
 	if err := c.ShouldBindJSON(&loginReq); err != nil {
 		handleResponse(c, h.Log, "error while binding body", http.StatusBadRequest, err)
@@ -38,8 +40,10 @@ func (h *Handler) CustomerLogin(c *gin.Context) {
 		handleResponse(c,h.Log,"error while validating  old password,old password: "+loginReq.Password, http.StatusBadRequest, err.Error())
 		return
 	}
+mail:=strings.ToLower(loginReq.Mail)
+	loginReq.Mail=mail	
 	
-	loginResp, err := h.Services.Auth().CustomerLogin(c.Request.Context(), loginReq)
+	loginResp, err := h.Services.Auth().UserLogin(c.Request.Context(), loginReq)
 	if err != nil {
 		handleResponse(c, h.Log, "unauthorized", http.StatusUnauthorized, err)
 		return
@@ -51,31 +55,34 @@ func (h *Handler) CustomerLogin(c *gin.Context) {
 
 
 
-// CustomerRegister godoc
-// @Router       /customer/register [POST]
-// @Summary      Customer register
-// @Description  Customer register
+// UserRegister godoc
+// @Router       /User/register [POST]
+// @Summary      User register
+// @Description  User register
 // @Tags         auth
 // @Accept       json
 // @Produce      json
-// @Param        register body models.CustomerRegisterRequest true "register"
+// @Param        register body models.UserRegisterRequest true "register"
 // @Success      201  {object}  models.Response
 // @Failure      400  {object}  models.Response
 // @Failure      404  {object}  models.Response
 // @Failure      500  {object}  models.Response
-func (h *Handler) CustomerRegister(c *gin.Context) {
-	loginReq := models.CustomerRegisterRequest{}
+func (h *Handler) UserRegister(c *gin.Context) {
+	loginReq := models.UserRegisterRequest{}
 
 	if err := c.ShouldBindJSON(&loginReq); err != nil {
 		handleResponse(c, h.Log, "error while binding body", http.StatusBadRequest, err)
 		return
 	}
 
+	mail:=strings.ToLower(loginReq.Mail)
+	loginReq.Mail=mail
+
 	if err := check.CheckEmail(loginReq.Mail); err != nil {
 		handleResponse(c,h.Log,"Email address does not exist or is undeliverable "+loginReq.Mail, http.StatusBadRequest, err.Error())
 		return
 	}
-	err := h.Services.Auth().CustomerRegister(c.Request.Context(), loginReq)
+	err := h.Services.Auth().UserRegister(c.Request.Context(), loginReq)
 	if err != nil {
 		handleResponse(c, h.Log, "", http.StatusInternalServerError, err)
 		return
@@ -86,22 +93,22 @@ func (h *Handler) CustomerRegister(c *gin.Context) {
 
 
 
-//////pasword to'gri ekanini tekshirish va hamma malumotlarni jo'natissh
 
-// CustomerCreateRegister godoc
-// @Router       /customer/auth/create [POST]
-// @Summary      Customer password check and create 
-// @Description  Customer password check and create
+
+// UserCreateRegister godoc
+// @Router       /User/auth/create [POST]
+// @Summary      User password check and create 
+// @Description  User password check and create
 // @Tags         auth
 // @Accept       json
 // @Produce      json
-// @Param        login body models.LoginCustomer true "login"
-// @Success      201  {object}  models.LoginCustomer
+// @Param        login body models.LoginUser true "login"
+// @Success      201  {object}  models.LoginUser
 // @Failure      400  {object}  models.Response
 // @Failure      404  {object}  models.Response
 // @Failure      500  {object}  models.Response
-func (h *Handler) CustomerRegisterCreate(c *gin.Context) {
-	loginReq := models.LoginCustomer{}
+func (h *Handler) UserRegisterCreateConfirm(c *gin.Context) {
+	loginReq := models.LoginUser{}
 
 	if err := c.ShouldBindJSON(&loginReq); err != nil {
 		handleResponse(c, h.Log, "error while binding body", http.StatusBadRequest, err)
@@ -109,8 +116,8 @@ func (h *Handler) CustomerRegisterCreate(c *gin.Context) {
 	}
 	fmt.Println("loginReq: ", loginReq)
 
-	if err := check.CheckEmail(loginReq.Gmail); err != nil {
-		handleResponse(c,h.Log,"Email address does not exist or is undeliverable "+loginReq.Gmail, http.StatusBadRequest, err.Error())
+	if err := check.CheckEmail(loginReq.Mail); err != nil {
+		handleResponse(c,h.Log,"Email address does not exist or is undeliverable "+loginReq.Mail, http.StatusBadRequest, err.Error())
 		return
 	}
 	if err := check.ValidatePassword(loginReq.Password); err != nil {
@@ -125,7 +132,7 @@ func (h *Handler) CustomerRegisterCreate(c *gin.Context) {
 
 	loginReq.Password=HashPassword
 
-	loginResp, err := h.Services.Auth().CustomerRegisterCreate(c.Request.Context(), loginReq)
+	loginResp, err := h.Services.Auth().UserRegisterCreateConfirm(c.Request.Context(), loginReq)
 	if err != nil {
 		handleResponse(c, h.Log, "erorororor", http.StatusUnauthorized, err)
 		return
@@ -134,4 +141,157 @@ func (h *Handler) CustomerRegisterCreate(c *gin.Context) {
 	handleResponse(c, h.Log, "Succes", http.StatusOK, loginResp)
 
 }
+
+
+
+// UserRegister godoc
+// @Router       /User/loginotp [POST]
+// @Summary      User login otp1
+// @Description  User login otp1
+// @Tags         auth_otp
+// @Accept       json
+// @Produce      json
+// @Param        register body models.UserRegisterRequest true "register"
+// @Success      201  {object}  models.Response
+// @Failure      400  {object}  models.Response
+// @Failure      404  {object}  models.Response
+// @Failure      500  {object}  models.Response
+func (h *Handler) UserLoginOtp(c *gin.Context) {
+	loginReq := models.UserRegisterRequest{}
+
+	if err := c.ShouldBindJSON(&loginReq); err != nil {
+		handleResponse(c, h.Log, "error while binding body", http.StatusBadRequest, err)
+		return
+	}
+	
+	mail:=strings.ToLower(loginReq.Mail)
+	loginReq.Mail=mail
+
+	if err := check.CheckEmail(loginReq.Mail); err != nil {
+		handleResponse(c,h.Log,"Email address does not exist or is undeliverable "+loginReq.Mail, http.StatusBadRequest, err.Error())
+		return
+	}
+	err := h.Services.Auth().UserLoginOtp(c.Request.Context(), loginReq)
+	if err != nil {
+		handleResponse(c, h.Log, "error", http.StatusBadRequest, err)
+		return 
+	}
+
+	handleResponse(c, h.Log, "Otp sent successfull", http.StatusOK, "")
+}
+
+
+
+// UserCreateRegister godoc
+// @Router       /User/auth/loginotp [POST]
+// @Summary      User otp code  check and login
+// @Description  User otp code check and login
+// @Tags         auth_otp
+// @Accept       json
+// @Produce      json
+// @Param        login body models.UserLoginOTP true "login"
+// @Success      201  {object}  models.UserLoginOTP
+// @Failure      400  {object}  models.Response
+// @Failure      404  {object}  models.Response
+// @Failure      500  {object}  models.Response
+func (h *Handler) UserLoginOtp2(c *gin.Context) {
+	loginReq := models.UserLoginOTP{}
+
+	if err := c.ShouldBindJSON(&loginReq); err != nil {
+		handleResponse(c, h.Log, "error while binding body", http.StatusBadRequest, err)
+		return
+	}
+	fmt.Println("loginReq: ", loginReq)
+
+	if err := check.CheckEmail(loginReq.Mail); err != nil {
+		handleResponse(c,h.Log,"Email address does not exist or is undeliverable "+loginReq.Mail, http.StatusBadRequest, err.Error())
+		return
+	}
+	
+	loginResp, err := h.Services.Auth().UserLoginOtp2(c.Request.Context(), loginReq)
+	if err != nil {
+		handleResponse(c, h.Log, "erorororor", http.StatusUnauthorized, err)
+		return
+	}
+
+	handleResponse(c, h.Log, "Succes", http.StatusOK, loginResp)
+
+}
+
+
+
+
+// UserRegister godoc
+// @Router       /User/Forgetpassword [POST]
+// @Summary      User Forgetpassword
+// @Description  User Forgetpassword
+// @Tags         Forgetpassword
+// @Accept       json
+// @Produce      json
+// @Param        register body models.UserRegisterRequest true "register"
+// @Success      201  {object}  models.Response
+// @Failure      400  {object}  models.Response
+// @Failure      404  {object}  models.Response
+// @Failure      500  {object}  models.Response
+func (h *Handler) Forgetpassword(c *gin.Context) {
+	loginReq := models.UserRegisterRequest{}
+
+	if err := c.ShouldBindJSON(&loginReq); err != nil {
+		handleResponse(c, h.Log, "error while binding body", http.StatusBadRequest, err)
+		return
+	}
+	
+	mail:=strings.ToLower(loginReq.Mail)
+	loginReq.Mail=mail
+
+	if err := check.CheckEmail(loginReq.Mail); err != nil {
+		handleResponse(c,h.Log,"Email address does not exist or is undeliverable "+loginReq.Mail, http.StatusBadRequest, err.Error())
+		return
+	}
+	err := h.Services.Auth().UserLoginOtp(c.Request.Context(), loginReq)
+	if err != nil {
+		handleResponse(c, h.Log, "error", http.StatusBadRequest, err)
+		return 
+	}
+
+	handleResponse(c, h.Log, "Otp sent successfull", http.StatusOK, "")
+}
+
+
+// UserCreateRegister godoc
+// @Router       /User/Forgetpassword2 [POST]
+// @Summary      User Forgetpassword 2
+// @Description  User Forgetpassword 2
+// @Tags         Forgetpassword
+// @Accept       json
+// @Produce      json
+// @Param        login body models.Forgetpassword2 true "login"
+// @Success      201  {object}  models.Forgetpassword2
+// @Failure      400  {object}  models.Response
+// @Failure      404  {object}  models.Response
+// @Failure      500  {object}  models.Response
+func (h *Handler) Forgetpassword2(c *gin.Context) {
+	loginReq := models.Forgetpassword2{}
+
+	if err := c.ShouldBindJSON(&loginReq); err != nil {
+		handleResponse(c, h.Log, "error while binding body", http.StatusBadRequest, err)
+		return
+	}
+	fmt.Println("loginReq: ", loginReq)
+
+	if err := check.CheckEmail(loginReq.Mail); err != nil {
+		handleResponse(c,h.Log,"Email address does not exist or is undeliverable "+loginReq.Mail, http.StatusBadRequest, err.Error())
+		return
+	}
+	
+	loginResp, err := h.Services.Auth().Forgetpassword2(c.Request.Context(), loginReq)
+	if err != nil {
+		handleResponse(c, h.Log, "erorororor", http.StatusUnauthorized, err)
+		return
+	}
+
+	handleResponse(c, h.Log, "Succes", http.StatusOK, loginResp)
+
+}
+
 

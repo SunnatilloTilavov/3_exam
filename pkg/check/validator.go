@@ -9,7 +9,7 @@ import (
 	"fmt"
 	"net/http"
 )
-	// "clone/rent_car_us/config"
+
 
 func ValidateCarYear(year int) error {
 	if year <= 0 || year > time.Now().Year()+1 {
