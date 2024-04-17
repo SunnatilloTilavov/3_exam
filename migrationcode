@@ -1,0 +1,7 @@
+migrate create -ext sql -dir migration/ -seq create;
+
+select *from schema_migrations;
+
+delete from schema_migrations;
+
+migrate -database 'postgres://sunnatillo:1111@localhost:5432/sqldatabase?sslmode=disable' -path migration up;
